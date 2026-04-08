@@ -1,10 +1,9 @@
 import { Router } from 'express';
+import { createShortUrl } from '../controllers/urlController.js';
 
 const router = Router();
 
-// Заготовка маршрутов CRUD для URL
-router.get('/', (req, res) => {
-  res.send('URL Routes Working');
-});
+// POST /shorten
+router.post('/', createShortUrl);
 
 export default router;
