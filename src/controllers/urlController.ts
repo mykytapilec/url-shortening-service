@@ -11,12 +11,17 @@ export const createShortUrl = async (req: Request, res: Response) => {
       return res.status(400).json({ message: 'Invalid URL' });
     }
 
-    let shortCode = generateShortCode();
-    let existing = await Url.findOne({ shortCode });
+    const existingUrl = await Url.findOne({ url });
+    if (existingUrl) {
+      return res.status(200).json(existingUrl);
+    }
 
-    while (existing) {
+    let shortCode = generateShortCode();
+    let existingCode = await Url.findOne({ shortCode });
+
+    while (existingCode) {
       shortCode = generateShortCode();
-      existing = await Url.findOne({ shortCode });
+      existingCode = await Url.findOne({ shortCode });
     }
 
     const newUrl = await Url.create({
@@ -30,9 +35,14 @@ export const createShortUrl = async (req: Request, res: Response) => {
   }
 };
 
+// GET /shorten/:code
 export const getUrlByCode = async (req: Request, res: Response) => {
   try {
-    const { code } = req.params;
+    const code = req.params.code as string;
+
+    if (!/^[a-zA-Z0-9]{6}$/.test(code)) {
+      return res.status(404).json({ message: 'Invalid short code' });
+    }
 
     const url = await Url.findOne({ shortCode: code });
 

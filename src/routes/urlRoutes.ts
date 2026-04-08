@@ -1,8 +1,5 @@
 import { Router } from 'express';
-import {
-  createShortUrl,
-  getUrlByCode
-} from '../controllers/urlController.js';
+import { createShortUrl, getUrlByCode } from '../controllers/urlController.js';
 
 const router = Router();
 
