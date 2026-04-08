@@ -14,7 +14,7 @@ app.get('/', (req, res) => {
   res.send('URL Shortening Service API is running');
 });
 
-// Redirect
+// Redirect by shortCode (catch-all)
 app.get('/:code', redirectToOriginal);
 
 export default app;

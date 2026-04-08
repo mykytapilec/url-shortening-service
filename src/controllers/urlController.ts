@@ -78,3 +78,12 @@ export const redirectToOriginal = async (req: Request, res: Response) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
+
+export const getAllUrls = async (req: Request, res: Response) => {
+  try {
+    const urls = await Url.find();
+    res.status(200).json(urls);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
+};
