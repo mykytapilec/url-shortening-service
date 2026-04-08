@@ -29,3 +29,42 @@ export const createShortUrl = async (req: Request, res: Response) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
+
+export const getUrlByCode = async (req: Request, res: Response) => {
+  try {
+    const { code } = req.params;
+
+    const url = await Url.findOne({ shortCode: code });
+
+    if (!url) {
+      return res.status(404).json({ message: 'URL not found' });
+    }
+
+    res.status(200).json(url);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+export const redirectToOriginal = async (req: Request, res: Response) => {
+  try {
+    const code = req.params.code as string;
+
+    if (!/^[a-zA-Z0-9]{6}$/.test(code)) {
+      return res.status(404).json({ message: 'Invalid short code' });
+    }
+
+    const url = await Url.findOne({ shortCode: code });
+
+    if (!url) {
+      return res.status(404).json({ message: 'URL not found' });
+    }
+
+    url.accessCount += 1;
+    await url.save();
+
+    res.redirect(url.url);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
+};
